@@ -1,7 +1,7 @@
 import Record from "../../../public/output.json";
 import { useEffect } from "react";
 import gsap from "gsap-trial";
-import { SplitText } from "gsap-trial/all";
+import { DrawSVGPlugin, MotionPathPlugin, SplitText } from "gsap-trial/all";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Preloader from "@/app/components/Preloader";
@@ -12,7 +12,12 @@ import { ScrollTrigger } from "gsap/all";
 
 const Home = () => {
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger, SplitText);
+    gsap.registerPlugin(
+      ScrollTrigger,
+      SplitText,
+      DrawSVGPlugin,
+      MotionPathPlugin
+    );
     AOS.init();
 
     const gsapContext = gsap.context(() => {
@@ -76,8 +81,49 @@ const Home = () => {
           stagger: 0.5,
         }
       );
+      /* Animation Story Section End */
+
+      /* Animation motion path */
+      const pulses = gsap
+        .timeline({
+          defaults: {
+            scale: 2,
+            autoAlpha: 1,
+            transformOrigin: "center",
+            ease: "elastic(2.5, 1)",
+          },
+        })
+        .to(".ball02, .text01", {}, 0.68)
+        .to(".ball03, .text02", {}, 1.12)
+        .to(".ball04, .text03", {}, 1.70);
+        
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: "#svg",
+            scrub: true,
+            start: "top 25%",
+            end: "bottom ",
+          },
+        })
+        /* .to(".ball02", { autoAlpha: 1, duration: 1.28 }) */
+        .from(".theLine", { drawSVG: 0, duration: 4 }, 0)
+        .to(
+          ".ball01",
+          {
+            motionPath: {
+              path: ".theLine",
+              align: ".theLine",
+              alignOrigin: [0.5, 0.5],
+            },
+            duration: 4,
+          },
+          0
+        )
+        .add(pulses, 0);
+      /* Animation motion path */
+
     });
-    /* Animation Story Section End */
 
     return () => {
       /* revert/kill/clear gsap if move to another page */
@@ -183,7 +229,7 @@ const Home = () => {
               className="absolute top-0 -left-[100px] w-[65dvh] h-[497px] object-cover rounded-def"
               alt=""
             />
-           <img
+            <img
               src={Record[0].image}
               className="absolute top-1/2 left-[500px] w-[65dvh] h-[497px] object-cover rounded-def"
               alt=""
@@ -213,7 +259,7 @@ const Home = () => {
               className="absolute top-0 left-[3000px] w-[65dvh] h-[497px] object-cover rounded-def"
               alt=""
             />
-             <img
+            <img
               src={Record[0].image}
               className="absolute top-1/2 left-[3500px] w-[65dvh] h-[497px] object-cover rounded-def"
               alt=""
@@ -229,6 +275,75 @@ const Home = () => {
 
       {/* Story for mobile */}
       <StorySectionMobile />
+
+      {/* Timeline story */}
+      <section id="svg" className=" min-h-dvh w-full pt-0 pb-0 md:pt-12 md:pb-4 flex justify-center items-center relative ">
+        <div className=" w-1/2 ">
+          <svg
+            
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 600 1200"
+          >
+
+            <path
+              className="theLine"
+              d="M 282 4 Q 95 28 283 39 Q 473 65 258 78 Q 3 99 300 137 Q 680 205 307 400 Q 1 546 304 716 Q 661 888 309 1082 Q -2 1238 324 1260 Q 467 1286 326 1337 Q 258 1367 331 1413"
+              fill="none"
+              stroke="white"
+              strokeWidth="10px"
+            />
+
+            <circle
+              className="ball ball01 fill-white"
+              r="15"
+              cx="490"
+              cy="240"
+            ></circle>
+            <circle
+              className="ball ball02 fill-white invisible"
+              r="15"
+              cx="490"
+              cy="240"
+            ></circle>
+            <circle
+              className="ball ball03 fill-white invisible"
+              r="15"
+              cx="152"
+              cy="554"
+            ></circle>
+            <circle
+              className="ball ball04 fill-white invisible"
+              r="15"
+              cx="482"
+              cy="900"
+            ></circle>
+          </svg>
+        </div>
+        <div className="absolute flex flex-col left-[50px] top-[285px]  md:top-[200px] md:left-[170px] xl:left-[200px] xl:top-[400px] w-1/2 md:w-1/3 xl:w-1/2 text-balance ">
+          <h1 className="text-[14px] md:text-4xl xl:text-6xl text-white font-bold">2018</h1>
+          <p className="text-[10px] leading-4 md:leading-0 md:text-xl xl:text-4xl text-white">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Necessitatibus maxime totam quibusdam, architecto iusto culpa atque
+            ea? Minus, omnis natus?
+          </p>
+        </div>
+        <div className="absolute flex flex-col right-[10px] md:right-[200px] xl:right-[100px] top-[390px] md:top-[450px] xl:top-[950px] w-1/2 md:w-1/3 xl:w-1/2 text-balance ">
+          <h1 className="text-[14px] md:text-4xl xl:text-6xl text-white font-bold">2019</h1>
+          <p className="text-[10px] leading-4 md:leading-0 md:text-xl xl:text-4xl text-white">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Necessitatibus maxime totam quibusdam, architecto iusto culpa atque
+            ea? Minus, omnis natus?
+          </p>
+        </div>
+        <div className="absolute flex flex-col left-[50px] top-[500px] md:left-[170px] xl:left-[200px] md:top-[700px] xl:top-[1550px] w-1/2 md:w-1/3 xl:w-1/2 text-balance ">
+          <h1 className="text-[14px] md:text-4xl xl:text-6xl text-white font-bold">2020</h1>
+          <p className="text-[10px] md:text-xl xl:text-4xl text-white">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Necessitatibus maxime totam quibusdam, architecto iusto culpa atque
+            ea? Minus, omnis natus?
+          </p>
+        </div>
+      </section>
 
       {/* Batch */}
       <section className="my-[24px] px-4 xl:px-10 flex flex-col gap-8 ">
