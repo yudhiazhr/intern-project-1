@@ -6,7 +6,7 @@ const Footer = () => {
           <h1 className="cursor-pointer text-black italic text-lg font-bold">
             CRETIVOX
           </h1>
-          <p className="text-lg ms-auto text-black">CRETIVOX INTERNSHIP EXPERIENCE | 2024</p>
+          <p className="text-base text-center xl:text-lg xl:ms-auto text-black">CRETIVOX INTERNSHIP EXPERIENCE | 2024</p>
         </div>
       </footer>
     </>

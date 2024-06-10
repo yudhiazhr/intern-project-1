@@ -1,11 +1,19 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import record from "../../../../public/output.json";
 import gsap from "gsap";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import {  SplitText } from "gsap-trial/all";
+import Preloader from "@/app/components/Preloader";
+import { ScrollTrigger } from "gsap/all";
 
 const DetailPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedExamIndex, setSelectedExamIndex] = useState(0);
+
+  /*   const [isLoading, setIsLoading] = useState(true); */
 
   const toggleModal = (index) => {
     setSelectedExamIndex(index);
@@ -44,23 +52,81 @@ const DetailPage = () => {
   };
 
   useEffect(() => {
-    const tween = gsap
-      .to(".marquee_part", {
-        xPercent: -100,
-        repeat: -1,
-        duration: 10,
-        ease: "linear",
-      })
-      .totalProgress(0.5);
+    AOS.init();
+    gsap.registerPlugin(SplitText, ScrollTrigger)
 
-    gsap.set(".marquee_inner", {
-      xPercent: 0,
+    const ctx = gsap.context(() => {
+
+      /* Marquee text Animation */
+      gsap
+        .to(".marquee_part", {
+          xPercent: -100,
+          repeat: -1,
+          duration: 10,
+          ease: "linear",
+        })
+        .totalProgress(0.5);
+
+      gsap.set(".marquee_inner", {
+        xPercent: 0,
+      });
+      /* Marquee Text Animation End */
+
+      /* Animation Hero Section */
+      gsap
+        .timeline({
+          duration:2,
+        })
+        .from(".split-text", {
+          y: 50,
+          ease: "back.inOut",
+          duration: 0.5,
+          opacity: 0,
+        })
+        .fromTo(
+          ".hero-image",
+          { opacity: 0 },
+          { opacity: 1, clipPath: "circle(75% at 50% 50%)" },
+          1.2
+        )
+        .from(".desc", { opacity: 0, y: 30, stagger: 0.1 })
+        .fromTo(".hr-line", { width: 0 }, { width: "100%", duration: 2 }, 2);
+        /* Animation Hero Section End */
+
+        /* Animation Philosphy section */
+      const philoshopySplitText = new SplitText(".philosophy-split", {
+        type: "chars",
+      });
+      const chars = philoshopySplitText.chars;
+
+      gsap.from(chars, {
+        opacity: 0.2,
+        stagger: 0.02,
+        ease: "back.out",
+        scrollTrigger: {
+          trigger: ".philosophy-split",
+          scrub: true,
+          start: "top top",
+          pin: ".on-here",
+        },
+      });
     });
-  });
+    /* Animation philosophy section */
+
+    return () => {
+      /* revert/kill/clear gsap if move to another page */
+      ctx.revert();
+    };
+  }, []);
 
   return (
-    <>
-      {/* Hero */}
+    <div>
+      {/* {isLoading ? (
+        <Preloader setIsLoading={setIsLoading} />
+      ) : ( 
+        <>
+        */}
+
       <div className="xl:hidden absolute w-full min-h-dvh flex flex-col">
         <img
           src={record[0].image}
@@ -69,102 +135,116 @@ const DetailPage = () => {
         />
         <div className="absolute flex flex-col w-full h-full top-0 rounded-o py-6 xl:p-[50px] justify-center items-center bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
       </div>
+
+      {/* Hero */}
       <section className=" pt-[100px] min-h-dvh px-4 xl:px-10 flex flex-col justify-between xl:justify-normal">
-        <h1 className="my-auto z-10 text-white text-center text-4xl xl:text-7xl text-balance">
-          {record[0].title}
-        </h1>
+        <div className="overflow-hidden">
+          <h1 className="my-auto z-10 text-white text-center text-4xl xl:text-7xl text-balance split-text">
+            {record[0].title}
+          </h1>
+        </div>
 
-        <img
-          src={record[0].image}
-          alt=""
-          className="hidden xl:block mt-[24px] rounded-xl w-full h-[680px] object-cover object-center"
-        />
+        <div>
+          <img
+            src={record[0].image}
+            alt=""
+            className="hidden xl:block mt-[24px] rounded-xl w-full h-[680px] object-cover object-center hero-image"
+          />
 
-        <div className="z-10 grid grid-cols-3 xl:grid-cols-6 gap-4 xl:gap-0 mt-8 border-b-2 pb-8">
-          {/* Batch */}
-          <div className="flex flex-col">
-            <h1 className="text-white  text-sm xl:text-md">Batch:</h1>
-            <p className="text-white text-lg xl:text-xl font-bold">
-              {record[0].batch}
-            </p>
+          <div className="z-10 grid grid-cols-3 xl:grid-cols-6 gap-4 xl:gap-0 mt-8 pb-8  ">
+            {/* Batch */}
+            <div className="flex flex-col desc">
+              <h1 className="text-white  text-sm xl:text-md">Batch:</h1>
+              <p className="text-white text-md xl:text-xl font-bold">
+                {record[0].batch}
+              </p>
+            </div>
+
+            {/* Member */}
+            <div className="flex flex-col desc">
+              <h1 className="text-white text-sm">Member:</h1>
+              <p className="text-white text-md xl:text-xl font-bold">
+                {record[0].member.length} Person
+              </p>
+            </div>
+
+            {/* Final Exam */}
+            <div className="flex flex-col desc">
+              <h1 className="text-white text-sm">Final Exam:</h1>
+              <p className="text-white text-md xl:text-xl font-bold">
+                {record[0].exam[0].name}
+              </p>
+            </div>
+
+            {/* Best Intern */}
+            <div className="flex flex-col desc">
+              <h1 className="text-white text-sm">Best Intern:</h1>
+              <p className="text-white text-md xl:text-xl font-bold">
+                {record[0].best_intern}
+              </p>
+            </div>
+
+            {/* Periode */}
+            <div className="flex flex-col desc">
+              <h1 className="text-white text-sm">Periode:</h1>
+              <p className="text-white text-md xl:text-xl font-bold">
+                {record[0].periode}
+              </p>
+            </div>
+
+            {/* Instagram */}
+            <div className="flex flex-col desc">
+              <h1 className="text-white text-sm">Instagram:</h1>
+              <p className="text-white text-md xl:text-xl font-bold">
+                @{record[0].instagram}
+              </p>
+            </div>
           </div>
-
-          {/* Member */}
-          <div className="flex flex-col">
-            <h1 className="text-white text-md">Member:</h1>
-            <p className="text-white text-xl font-bold">
-              {record[0].member.length} Person
-            </p>
-          </div>
-
-          {/* Final Exam */}
-          <div className="flex flex-col">
-            <h1 className="text-white text-md">Final Exam:</h1>
-            <p className="text-white text-xl font-bold">
-              {record[0].exam[0].name}
-            </p>
-          </div>
-
-          {/* Best Intern */}
-          <div className="flex flex-col">
-            <h1 className="text-white text-md">Best Intern:</h1>
-            <p className="text-white text-xl font-bold">
-              {record[0].best_intern}
-            </p>
-          </div>
-
-          {/* Periode */}
-          <div className="flex flex-col">
-            <h1 className="text-white text-md">Periode:</h1>
-            <p className="text-white text-xl font-bold">{record[0].periode}</p>
-          </div>
-
-          {/* Instagram */}
-          <div className="flex flex-col">
-            <h1 className="text-white text-md">Instagram:</h1>
-            <p className="text-white text-xl font-bold">
-              @{record[0].instagram}
-            </p>
-          </div>
+          <hr className="hr-line w-[10px] h-[2px]" />
         </div>
       </section>
 
       {/* Philosophy */}
-      <section className="overflow-hidden px-4 xl:px-10 flex flex-col gap-4">
-        <h1 className="mt-8 mb-4 text-2xl xl:text-4xl my-4">Philosophy</h1>
-        <p className=" text-justify  text-lg xl:text-2xl">
-          {record[0].philoshopy}
-        </p>
+      <section className="on-here overflow-hidden px-4 xl:px-10 flex flex-col gap-4">
+        <div className="philosophy-split">
+          <h1 className="mt-8 mb-4 text-2xl xl:text-4xl my-4">Philosophy</h1>
+          <p className=" text-justify  text-lg xl:text-2xl">
+            {record[0].philoshopy}
+          </p>
+        </div>
 
         <div className="flex flex-col gap-8 mt-16">
           <h1 className="text-2xl xl:text-4xl">Member</h1>
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-5 ">
             {record.map((data, index) => (
-              <>
-                <div className="relative">
-                  <img
-                    key={index}
-                    src={data.member[0].image}
-                    alt=""
-                    className="w-full h-full aspect-3/4 object-cover rounded-3xl hover:scale-125 "
-                  />
-                  <div className="absolute flex flex-col w-full h-full top-0 rounded-o p-2 xl:p-[30px]  bg-gradient-to-b from-white/0 via-white/0 to-black">
-                    <div className="w-auto ">
-                      <div className=" inline-flex w-auto py-1 px-2  xl:p-4 bg-black rounded-def text-[8px] xl:text-[12px] ">
-                        <span>{data.member[0].university}</span>
-                      </div>
-                    </div>
-                    <div className="mt-auto">
-                      <h1 className=" text-md xl:text-xl">
-                        {data.member[0].name}
-                      </h1>
-                      <h2 className=" text-sm xl:text-md">
-                        {data.member[0].division}
-                      </h2>
+              <div
+                key={index}
+                className="relative "
+                data-aos="fade-up"
+                data-aos-duration="1000"
+                data-aos-delay={`${index}` * 100 + 300}
+              >
+                <img
+                  src={data.member[0].image}
+                  alt=""
+                  className="w-full h-full aspect-3/4 object-cover rounded-3xl hover:scale-125 "
+                />
+                <div className="absolute flex flex-col w-full h-full top-0 rounded-o p-2 xl:p-[30px]  bg-gradient-to-b from-white/0 via-white/0 to-black">
+                  <div className="w-auto ">
+                    <div className=" inline-flex w-auto py-1 px-2  xl:p-4 bg-black rounded-def text-[8px] xl:text-[12px] ">
+                      <span>{data.member[0].university}</span>
                     </div>
                   </div>
+                  <div className="mt-auto">
+                    <h1 className=" text-md xl:text-xl">
+                      {data.member[0].name}
+                    </h1>
+                    <h2 className=" text-sm xl:text-md">
+                      {data.member[0].division}
+                    </h2>
+                  </div>
                 </div>
-              </>
+              </div>
             ))}
           </div>
         </div>
@@ -177,7 +257,13 @@ const DetailPage = () => {
 
       {/* Video Modal */}
       <section className="overflow-hidden px-0 xl:px-10 flex flex-col mb-12 xl:mb-0">
-        <div className="relative cursor-pointer" onClick={() => toggleModal(0)}>
+        <div
+          className="relative cursor-pointer"
+          onClick={() => toggleModal(0)}
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="100"
+        >
           <img
             src={record[0].image}
             alt=""
@@ -202,13 +288,13 @@ const DetailPage = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
-                fill="currentColor"
+                fillRule="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
 
@@ -224,11 +310,14 @@ const DetailPage = () => {
               <div
                 className="relative cursor-pointer"
                 onClick={() => toggleModal(1)}
+                data-aos="fade-up"
+                data-aos-duration="1000"
+                data-aos-delay="100"
               >
                 <img
                   src={record[0].exam[2].data}
                   alt=""
-                  className="w-full h-full xl:h-[719px] rounded-3xl"
+                  className="w-full h-full xl:h-[719px] rounded-3xl object-cover object-center"
                 />
                 <div className="absolute flex flex-col gap-4 justify-center w-full h-full top-0 rounded-3xl px-[180px] bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
               </div>
@@ -239,11 +328,14 @@ const DetailPage = () => {
               <div
                 className="relative cursor-pointer"
                 onClick={() => toggleModal(2)}
+                data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
               >
                 <img
                   src={record[0].exam[2].data}
                   alt=""
-                  className="w-full h-full xl:h-[719px] rounded-3xl"
+                  className="w-full h-full xl:h-[719px] rounded-3xl object-cover object-center"
                 />
                 <div className="absolute flex flex-col gap-4 justify-center w-full h-full top-0 rounded-3xl px-[180px] bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
               </div>
@@ -255,6 +347,9 @@ const DetailPage = () => {
             <div
               className="relative cursor-pointer w-full  h-[400px] xl:h-[719px]"
               onClick={() => toggleModal(3)}
+              data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="300"
             >
               <img
                 src={record[0].exam[2].data}
@@ -287,7 +382,7 @@ const DetailPage = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
-                fill="none"
+                fillRule="none"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -316,7 +411,9 @@ const DetailPage = () => {
           </div>
         </div>
       )}
-    </>
+
+      {/* </> )} */}
+    </div>
   );
 };
 

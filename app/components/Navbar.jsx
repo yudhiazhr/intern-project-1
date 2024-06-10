@@ -1,23 +1,44 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [scrollY, setscrollY] = useState(0);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    if (currentScrollY > scrollY && currentScrollY > 80) {
+      // Scrolling down
+      setShowNavbar(false);
+    } else {
+      // Scrolling up
+      setShowNavbar(true);
+    }
+    setscrollY(currentScrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollY]);
+
   return (
     <>
       <header
-        className={
-          "z-50 fixed flex justify-center items-center px-10 h-[80px] w-full bg-transparent xl:bg-black"
-        }
+        className={`z-50 fixed flex justify-center items-center px-4 xl:px-10 h-[80px] w-full bg-transparent xl:bg-black transition-transform duration-300 ${
+          showNavbar ? "translate-y-0" : "-translate-y-full"
+        }`}
       >
         <div className="flex w-full items-center justify-between">
-          <Link href='/' className="cursor-pointer text-white font-bold italic text-md xl:text-2xl">
+          <Link href="/" className="cursor-pointer text-white font-bold italic text-md xl:text-2xl">
             CRETIVOX
           </Link>
           <button
