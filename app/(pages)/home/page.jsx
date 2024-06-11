@@ -9,7 +9,9 @@ import StorySectionMobile from "@/app/components/mobile/StorySection";
 import AboutSectionMobile from "@/app/components/mobile/AboutSection";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/all";
-import T from "gsap-trial/ScrollToPlugin";
+
+import BgHero from "@/public/imgs/Group 30.png";
+import Image from "next/image";
 
 const Home = () => {
   useEffect(() => {
@@ -22,7 +24,22 @@ const Home = () => {
     AOS.init();
 
     const gsapContext = gsap.context(() => {
-      /* Animation marquee vertical */
+      /* Marquee image Animation */
+      gsap
+        .to(".marquee_part", {
+          yPercent: -100,
+          repeat: -1,
+          duration: 100,
+          ease: "linear",
+        })
+        .totalProgress(0.2);
+
+      gsap.set(".marquee_inner", {
+        yPercent: 0,
+      });
+      /* Marquee image Animation End */
+
+      /* Animation marquee text vertical */
       const marqVerti = gsap.timeline({
         repeat: -1,
         defaults: { duration: 1, delay: 1, ease: "expo.inOut" },
@@ -33,7 +50,7 @@ const Home = () => {
       marqVerti.to(".marquee-vertical", { yPercent: -300 });
       marqVerti.to(".marquee-vertical", { yPercent: 0 });
 
-      /* Animation marquee vertical end */
+      /* Animation marquee text vertical end */
 
       /* Animation Hero Section */
       const tl = gsap.timeline({
@@ -61,13 +78,13 @@ const Home = () => {
           ease: "power1.inOut",
           repeat: -1,
           yoyo: true,
-        })
-        .to(".hero-image", {
+        });
+      /* .to(".hero-image", {
           duration: 2,
           repeat: -1,
           y: 50,
           yoyo: true,
-        }, 1);
+        }, 1); */
       tl.add(marqVerti, 3.4);
 
       /* Animation Hero Section End */
@@ -170,8 +187,8 @@ const Home = () => {
         <div className="absolute flex flex-col w-full h-full top-0 rounded-o py-6 xl:p-[50px] justify-center items-center bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
       </div>
 
-      <section className=" pt-24 pb-6 xl:py-0 xl:pb-4 min-h-dvh flex flex-col justify-between xl:justify-center  items-center gap-10 relative ">
-        <div className="w-full xl:w-1/2 text-center xl:my-auto">
+      <section className="marquee_inner  relative overflow-hidden pb-28 xl:pb-4 min-h-dvh flex flex-col justify-between xl:justify-center items-center gap-10  pt-24 xl:pt-[80px]">
+        <div className="w-full xl:w-1/2 text-center">
           <div className="overflow-hidden">
             <h1 className="split-text text-2xl xl:text-9xl font-bold font-acumin-pro-book">
               THE MOST
@@ -187,24 +204,9 @@ const Home = () => {
               INTERSHIP
             </h2>
           </div>
-
-          {/* Dekstop */}
-          <div className="hidden xl:flex flex-col justify-between xl:justify-center items-center gap-8 pt-8">
-            <div className="overflow-hidden h-8 w-full ">
-              {Record.map((data, index) => (
-                <h1
-                  key={index}
-                  className="marquee-vertical text-center text-white text-xl xl:text-2xl text-balance font-monbaiti"
-                >
-                  {data.title}
-                </h1>
-              ))}
-            </div>
-          </div>
         </div>
 
-        {/* Mobile */}
-        <div className="flex xl:hidden flex-col justify-between xl:justify-center items-center gap-8 pt-8 mt-auto">
+        <div className="flex flex-col justify-between xl:justify-center items-center gap-8">
           <div className="overflow-hidden h-8 w-full ">
             {Record.map((data, index) => (
               <h1
@@ -217,7 +219,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="desc flex flex-col justify-center items-center gap-4">
+        <div className="absolute desc flex flex-col justify-center items-center gap-4 bottom-4 ">
           <h1 className="text-sm xl:text-lg px-4 py-2 bg-white/25 rounded-def cursor-pointer">
             Explore more
           </h1>
@@ -241,7 +243,32 @@ const Home = () => {
         </div>
 
         {/* Image Absolute */}
-        <div className="absolute hidden xl:flex gap-10 h-dvh w-full justify-center items-center -z-[1]">
+          <div className="marquee_part absolute hidden xl:flex xl:flex-col gap-10 h-dvh w-full justify-center items-center -z-[1]">
+            <Image
+              src={BgHero}
+              alt="Background Hero"
+              width={1000}
+              height={1000}
+              className="w-full h-full object-cover"
+            />
+             <Image
+              src={BgHero}
+              alt="Background Hero"
+              width={1000}
+              height={1000}
+              className="w-full h-full object-cover"
+
+            />
+             <Image
+              src={BgHero}
+              alt="Background Hero"
+              width={1000}
+              height={1000}
+              className="w-full h-full object-cover"
+
+            />
+          </div>
+        {/* <div className="marquee_part absolute hidden xl:flex gap-10 h-dvh w-full justify-center items-center -z-[1]">
           <img
             src={Record[0].image}
             className="hero-image absolute opacity-65 left-[300px] top-32 w-[500px] h-96 object-cover "
@@ -265,7 +292,31 @@ const Home = () => {
             className="hero-image absolute opacity-65 right-44 bottom-24 w-[600px] h-96 object-cover "
             alt=""
           />
-        </div>
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 left-[700px] bottom-[-500px] w-[600px] h-96 object-cover "
+            alt=""
+          />
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 right-[100px] bottom-[-300px] w-96 h-96 object-cover "
+            alt=""
+          />
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 left-[100px] bottom-[-700px] w-96 h-96 object-cover "
+            alt=""
+          />
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 right-[400px] bottom-[-800px] w-96 h-96 object-cover "
+            alt=""
+          />
+        </div> */}
       </section>
       {/* <section className="pt-[100px] min-h-dvh px-10 flex flex-col justify-between xl:justify-normal">
         <div className="flex flex-col xl:flex-row justify-center xl:justify-between items-center">

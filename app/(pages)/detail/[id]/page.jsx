@@ -5,7 +5,7 @@ import record from "../../../../public/output.json";
 import gsap from "gsap";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import {  SplitText } from "gsap-trial/all";
+import { SplitText } from "gsap-trial/all";
 import Preloader from "@/app/components/Preloader";
 import { ScrollTrigger } from "gsap/all";
 
@@ -53,10 +53,9 @@ const DetailPage = () => {
 
   useEffect(() => {
     AOS.init();
-    gsap.registerPlugin(SplitText, ScrollTrigger)
+    gsap.registerPlugin(SplitText, ScrollTrigger);
 
     const ctx = gsap.context(() => {
-
       /* Marquee text Animation */
       gsap
         .to(".marquee_part", {
@@ -75,7 +74,7 @@ const DetailPage = () => {
       /* Animation Hero Section */
       gsap
         .timeline({
-          duration:2,
+          duration: 2,
         })
         .from(".split-text", {
           y: 50,
@@ -91,9 +90,9 @@ const DetailPage = () => {
         )
         .from(".desc", { opacity: 0, y: 30, stagger: 0.1 })
         .fromTo(".hr-line", { width: 0 }, { width: "100%", duration: 2 }, 2);
-        /* Animation Hero Section End */
+      /* Animation Hero Section End */
 
-        /* Animation Philosphy section */
+      /* Animation Philosphy section */
       const philoshopySplitText = new SplitText(".philosophy-split", {
         type: "chars",
       });
@@ -308,7 +307,7 @@ const DetailPage = () => {
           <div className="flex gap-6 w-full">
             <div className="flex flex-col w-1/2 gap-4">
               <div
-                className="relative cursor-pointer"
+                className="relative cursor-pointer group"
                 onClick={() => toggleModal(1)}
                 data-aos="fade-up"
                 data-aos-duration="1000"
@@ -319,25 +318,62 @@ const DetailPage = () => {
                   alt=""
                   className="w-full h-full xl:h-[719px] rounded-3xl object-cover object-center"
                 />
-                <div className="absolute flex flex-col gap-4 justify-center w-full h-full top-0 rounded-3xl px-[180px] bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
+                <div className="absolute flex flex-col justify-center w-full h-full top-0 xl:rounded-o py-6 xl:p-[50px] items-center bg-gradient-to-b from-white/0 via-white/0 to-black hover:bg-black/40 duration-300 transition-all ">
+                  <svg
+                    className="w-8 h-8 xl:w-24 xl:h-24 text-transparent group-hover:text-white transition-all duration-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
               </div>
               <h1 className="text-xl">{record[0].exam[1].name}</h1>
             </div>
 
             <div className="flex flex-col w-1/2 gap-4">
               <div
-                className="relative cursor-pointer"
+                className="relative cursor-pointer group"
                 onClick={() => toggleModal(2)}
                 data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-delay="200"
+                data-aos-duration="1000"
+                data-aos-delay="200"
               >
                 <img
                   src={record[0].exam[2].data}
                   alt=""
                   className="w-full h-full xl:h-[719px] rounded-3xl object-cover object-center"
                 />
-                <div className="absolute flex flex-col gap-4 justify-center w-full h-full top-0 rounded-3xl px-[180px] bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
+                <div className="absolute flex flex-col justify-center w-full h-full top-0 xl:rounded-o py-6 xl:p-[50px] items-center bg-gradient-to-b from-white/0 via-white/0 to-black hover:bg-black/30 duration-300 transition-all ">
+                  <svg
+                    className="w-8 h-8 xl:w-24 xl:h-24 text-transparent group-hover:text-white "
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-width="2"
+                      d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"
+                    />
+                    <path
+                      stroke="currentColor"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
+                </div>
               </div>
               <h1 className="text-xl">{record[0].exam[2].name}</h1>
             </div>
@@ -345,18 +381,34 @@ const DetailPage = () => {
 
           <div className="flex flex-col w-full h-full gap-4">
             <div
-              className="relative cursor-pointer w-full  h-[400px] xl:h-[719px]"
+              className="relative cursor-pointer w-full  h-[400px] xl:h-[719px] group"
               onClick={() => toggleModal(3)}
               data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-delay="300"
+              data-aos-duration="1000"
+              data-aos-delay="300"
             >
               <img
                 src={record[0].exam[2].data}
                 alt=""
                 className="object-cover w-full h-full rounded-3xl"
               />
-              <div className="absolute flex flex-col  justify-center w-full h-full top-0 rounded-3xl px-[180px] bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
+              <div className="absolute flex flex-col justify-center w-full h-full top-0 xl:rounded-o py-6 xl:p-[50px] items-center bg-gradient-to-b from-white/0 via-white/0 to-black hover:bg-black/30 duration-300 transition-all ">
+                <svg
+                  className="w-8 h-8 xl:w-24 xl:h-24 text-transparent group-hover:text-white transition-all duration-300"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
             </div>
             <h1 className="text-xl">
               {" "}
