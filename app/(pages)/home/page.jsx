@@ -9,6 +9,7 @@ import StorySectionMobile from "@/app/components/mobile/StorySection";
 import AboutSectionMobile from "@/app/components/mobile/AboutSection";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/all";
+import T from "gsap-trial/ScrollToPlugin";
 
 const Home = () => {
   useEffect(() => {
@@ -21,6 +22,19 @@ const Home = () => {
     AOS.init();
 
     const gsapContext = gsap.context(() => {
+      /* Animation marquee vertical */
+      const marqVerti = gsap.timeline({
+        repeat: -1,
+        defaults: { duration: 1, delay: 1, ease: "expo.inOut" },
+      });
+
+      marqVerti.to(".marquee-vertical", { yPercent: -100 });
+      marqVerti.to(".marquee-vertical", { yPercent: -200 });
+      marqVerti.to(".marquee-vertical", { yPercent: -300 });
+      marqVerti.to(".marquee-vertical", { yPercent: 0 });
+
+      /* Animation marquee vertical end */
+
       /* Animation Hero Section */
       const tl = gsap.timeline({
         duration: 2,
@@ -30,18 +44,32 @@ const Home = () => {
         y: 130,
         ease: "back.inOut",
         duration: 1,
-        stagger: 0.2,
-        skewY: 5,
-        opacity: 0,
+        stagger: 0.3,
       })
+        .from(".marquee-vertical", { y: 30 })
         .from(".container-video", { opacity: 0, duration: 1 }, 2)
         .fromTo(
           ".hero-image",
           { opacity: 0 },
-          { opacity: 1, clipPath: "circle(75% at 50% 50%)" },
+          { opacity: 0.65, clipPath: "circle(75% at 50% 50%)" },
           2
         )
-        .from(".desc", { opacity: 0, y: 30 });
+        .from(".desc", { opacity: 0, y: 30 })
+        .to(".arrow-down", {
+          y: 10,
+          duration: 1,
+          ease: "power1.inOut",
+          repeat: -1,
+          yoyo: true,
+        })
+        .to(".hero-image", {
+          duration: 2,
+          repeat: -1,
+          y: 50,
+          yoyo: true,
+        }, 1);
+      tl.add(marqVerti, 3.4);
+
       /* Animation Hero Section End */
 
       /* Animation About section */
@@ -95,8 +123,8 @@ const Home = () => {
         })
         .to(".ball02, .text01", {}, 0.68)
         .to(".ball03, .text02", {}, 1.12)
-        .to(".ball04, .text03", {}, 1.70);
-        
+        .to(".ball04, .text03", {}, 1.7);
+
       gsap
         .timeline({
           scrollTrigger: {
@@ -122,7 +150,6 @@ const Home = () => {
         )
         .add(pulses, 0);
       /* Animation motion path */
-
     });
 
     return () => {
@@ -134,7 +161,7 @@ const Home = () => {
   return (
     <div>
       {/* Home */}
-      <div className="xl:hidden absolute w-full min-h-dvh flex flex-col">
+      <div className="hero-image xl:hidden absolute w-full min-h-dvh flex flex-col">
         <img
           src={Record[0].image}
           className="h-[100dvh] w-full object-cover"
@@ -142,7 +169,105 @@ const Home = () => {
         />
         <div className="absolute flex flex-col w-full h-full top-0 rounded-o py-6 xl:p-[50px] justify-center items-center bg-gradient-to-b from-white/0 via-white/0 to-black"></div>
       </div>
-      <section className="pt-[100px] min-h-dvh px-10 flex flex-col justify-between xl:justify-normal">
+
+      <section className=" pt-24 pb-6 xl:py-0 xl:pb-4 min-h-dvh flex flex-col justify-between xl:justify-center  items-center gap-10 relative ">
+        <div className="w-full xl:w-1/2 text-center xl:my-auto">
+          <div className="overflow-hidden">
+            <h1 className="split-text text-2xl xl:text-9xl font-bold font-acumin-pro-book">
+              THE MOST
+            </h1>
+          </div>
+          <div className="overflow-hidden">
+            <h1 className="split-text text-2xl xl:text-9xl font-bold font-acumin-pro-book">
+              PRESTIGIOUS
+            </h1>
+          </div>
+          <div className="overflow-hidden">
+            <h2 className="split-text text-2xl xl:text-9xl italic font-acumin-pro-book">
+              INTERSHIP
+            </h2>
+          </div>
+
+          {/* Dekstop */}
+          <div className="hidden xl:flex flex-col justify-between xl:justify-center items-center gap-8 pt-8">
+            <div className="overflow-hidden h-8 w-full ">
+              {Record.map((data, index) => (
+                <h1
+                  key={index}
+                  className="marquee-vertical text-center text-white text-xl xl:text-2xl text-balance font-monbaiti"
+                >
+                  {data.title}
+                </h1>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile */}
+        <div className="flex xl:hidden flex-col justify-between xl:justify-center items-center gap-8 pt-8 mt-auto">
+          <div className="overflow-hidden h-8 w-full ">
+            {Record.map((data, index) => (
+              <h1
+                key={index}
+                className="marquee-vertical text-center text-white text-xl xl:text-2xl text-balance font-monbaiti"
+              >
+                {data.title}
+              </h1>
+            ))}
+          </div>
+        </div>
+
+        <div className="desc flex flex-col justify-center items-center gap-4">
+          <h1 className="text-sm xl:text-lg px-4 py-2 bg-white/25 rounded-def cursor-pointer">
+            Explore more
+          </h1>
+          <svg
+            className="arrow-down w-6 h-6 xl:w-12 xl:h-12 text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 19V5m0 14-4-4m4 4 4-4"
+            />
+          </svg>
+        </div>
+
+        {/* Image Absolute */}
+        <div className="absolute hidden xl:flex gap-10 h-dvh w-full justify-center items-center -z-[1]">
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 left-[300px] top-32 w-[500px] h-96 object-cover "
+            alt=""
+          />
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 left-[500px] -bottom-24 w-96 h-96 object-cover "
+            alt=""
+          />
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 right-[700px] top-0 w-96 h-96 object-cover "
+            alt=""
+          />
+
+          <img
+            src={Record[0].image}
+            className="hero-image absolute opacity-65 right-44 bottom-24 w-[600px] h-96 object-cover "
+            alt=""
+          />
+        </div>
+      </section>
+      {/* <section className="pt-[100px] min-h-dvh px-10 flex flex-col justify-between xl:justify-normal">
         <div className="flex flex-col xl:flex-row justify-center xl:justify-between items-center">
           <div className="flex justify-center text-center xl:justify-normal xl:text-left h-[210px] w-[293px] xl:w-[493px]">
             <div className="flex flex-col">
@@ -184,7 +309,7 @@ const Home = () => {
             pariatur, quas rem fuga vel?
           </h1>
         </div>
-      </section>
+      </section> */}
 
       {/* About */}
       <section className="hidden xl:flex about-section h-dvh px-10">
@@ -277,14 +402,12 @@ const Home = () => {
       <StorySectionMobile />
 
       {/* Timeline story */}
-      <section id="svg" className=" min-h-dvh w-full pt-0 pb-0 md:pt-12 md:pb-4 flex justify-center items-center relative ">
-        <div className=" w-1/2 ">
-          <svg
-            
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 600 1200"
-          >
-
+      <section
+        id="svg"
+        className=" min-h-dvh w-full pt-0 pb-0 md:pt-12 md:pb-4 flex justify-center items-center relative "
+      >
+        <div className=" w-full xl:w-1/2 ">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 1200">
             <path
               className="theLine"
               d="M 282 4 Q 95 28 283 39 Q 473 65 258 78 Q 3 99 300 137 Q 680 205 307 400 Q 1 546 304 716 Q 661 888 309 1082 Q -2 1238 324 1260 Q 467 1286 326 1337 Q 258 1367 331 1413"
@@ -319,25 +442,31 @@ const Home = () => {
             ></circle>
           </svg>
         </div>
-        <div className="absolute flex flex-col left-[50px] top-[285px]  md:top-[200px] md:left-[170px] xl:left-[200px] xl:top-[400px] w-1/2 md:w-1/3 xl:w-1/2 text-balance ">
-          <h1 className="text-[14px] md:text-4xl xl:text-6xl text-white font-bold">2018</h1>
-          <p className="text-[10px] leading-4 md:leading-0 md:text-xl xl:text-4xl text-white">
+        <div className="absolute flex flex-col left-[70px] top-[150px]  md:top-[200px] md:left-[170px] xl:left-[200px] xl:top-[400px] w-1/2 md:w-1/3 xl:w-1/2  ">
+          <h1 className="text-xl md:text-4xl xl:text-6xl text-white font-bold">
+            2018
+          </h1>
+          <p className="text-sm leading-4 md:leading-0 md:text-xl xl:text-4xl text-white">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Necessitatibus maxime totam quibusdam, architecto iusto culpa atque
             ea? Minus, omnis natus?
           </p>
         </div>
-        <div className="absolute flex flex-col right-[10px] md:right-[200px] xl:right-[100px] top-[390px] md:top-[450px] xl:top-[950px] w-1/2 md:w-1/3 xl:w-1/2 text-balance ">
-          <h1 className="text-[14px] md:text-4xl xl:text-6xl text-white font-bold">2019</h1>
-          <p className="text-[10px] leading-4 md:leading-0 md:text-xl xl:text-4xl text-white">
+        <div className="absolute flex flex-col right-[50px] md:right-[200px] xl:right-[100px] top-[350px] md:top-[450px] xl:top-[950px] w-1/2 md:w-1/3 xl:w-1/2  ">
+          <h1 className="text-xl md:text-4xl xl:text-6xl text-white font-bold">
+            2019
+          </h1>
+          <p className="text-sm leading-4 md:leading-0 md:text-xl xl:text-4xl text-white">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Necessitatibus maxime totam quibusdam, architecto iusto culpa atque
             ea? Minus, omnis natus?
           </p>
         </div>
-        <div className="absolute flex flex-col left-[50px] top-[500px] md:left-[170px] xl:left-[200px] md:top-[700px] xl:top-[1550px] w-1/2 md:w-1/3 xl:w-1/2 text-balance ">
-          <h1 className="text-[14px] md:text-4xl xl:text-6xl text-white font-bold">2020</h1>
-          <p className="text-[10px] md:text-xl xl:text-4xl text-white">
+        <div className="absolute flex flex-col left-[70px] top-[570px] md:left-[170px] xl:left-[200px] md:top-[700px] xl:top-[1550px] w-1/2 md:w-1/3 xl:w-1/2  ">
+          <h1 className="text-xl md:text-4xl xl:text-6xl text-white font-bold">
+            2020
+          </h1>
+          <p className="text-sm md:text-xl xl:text-4xl text-white">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Necessitatibus maxime totam quibusdam, architecto iusto culpa atque
             ea? Minus, omnis natus?
